@@ -1,7 +1,9 @@
 import getLastEvent from "../utils/getLastEvent";
 import getSelector from "../utils/getSelector";
 import tracker from "../utils/tracker";
-
+/**
+ * 针对JS的错误进行捕获
+ */
 export function injectJsError () {
     // 监控获取未处理的异常
     window.addEventListener('error', function (event) {

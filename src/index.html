@@ -11,6 +11,8 @@
         <input type="button" value="点击抛出错误" onclick="errorClick()" />
         <input type="button" value="点击抛出Promise错误" onclick="promiseErrorClick()" />
         <input type="button" value="点击抛出资源加载错误" onclick="resourceErrorClick()" />
+        <input type="button" value="调用接口(成功)" onclick="interfaceErrorClick(true)" />
+        <input type="button" value="调用接口(失败)" onclick="interfaceErrorClick(false)" />
       </div>
     </div>
     <script>
@@ -25,15 +27,23 @@
       function resourceErrorClick() {
         let img = document.createElement('img');
         img.src = 'https://testRes.com/test.jpg';
-        // 监听加载完成事件
-        img.addEventListener('load', function() {
-          console.log('图片加载完成');
-        });
-        // 监听加载失败事件
-        img.addEventListener('error', function() {
-          console.log('图片加载失败');
-        });
         document.body.appendChild(img);
+      }
+      function interfaceErrorClick(isSuccess=false) {
+        let xhr = new XMLHttpRequest;
+        let url = isSuccess ? '/api/users' : '/api/error'
+        if (isSuccess) {
+          xhr.open('GET', url, true);
+          xhr.send();
+        } else {
+          let data = {
+            name: 'Alice',
+            age: 25
+          }
+          xhr.open('POST', url, true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.send(JSON.stringify(data));
+        }        
       }
     </script>
   </body>
