@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="container">
+      <div class="content">
+        <input type="button" value="点击抛出错误" onclick="errorClick()" />
+        <input type="button" value="点击抛出Promise错误" onclick="promiseErrorClick()" />
+        <input type="button" value="点击抛出资源加载错误" onclick="resourceErrorClick()" />
+      </div>
+    </div>
+    <script>
+      function errorClick() {
+        window.someVar.error = 'error';
+      }
+      function promiseErrorClick() {
+        new Promise(function (resolve, reject) {
+          window.someVar.error = 'error';
+        });
+      }
+      function resourceErrorClick() {
+        let img = document.createElement('img');
+        img.src = 'https://testRes.com/test.jpg';
+        // 监听加载完成事件
+        img.addEventListener('load', function() {
+          console.log('图片加载完成');
+        });
+        // 监听加载失败事件
+        img.addEventListener('error', function() {
+          console.log('图片加载失败');
+        });
+        document.body.appendChild(img);
+      }
+    </script>
+  </body>
+</html>
