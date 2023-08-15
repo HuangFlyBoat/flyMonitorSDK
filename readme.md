@@ -1,5 +1,9 @@
 # 前端监控 SDK 使用文档
 
+不侵入业务代码，轻量级的监控SDK。
+
+全局监控错误和异常
+
 ## 一、数据上传
 
 采用阿里云日志服务提供的 WebTracking 来进行网络请求上传日志数据
@@ -11,18 +15,42 @@ https://help.aliyun.com/zh/sls/developer-reference/putwebtracking#reference-3544
 
 ### 1. JS执行错误
 
+监听window下没有被捕获和处理的错误
+```js
+ window.addEventListener('error', function (event) {...}
+```
 
 ### 2. 期约未捕获的错误
 
+监控期约中出现的未被捕获的错误
+
+```js
+window.addEventListener('unhandledrejection', (event) => {...}
+```
 
 ### 3. 资源加载错误
 
+资源加载错误也是通过监听 error 事件来实现，对event进行一些判断来
+
+```js
+ window.addEventListener('error', function (event) {
+    if (event.target && (event.target.src || event.target.href)) {
+        // 说明是资源加载错误
+        ...
+    } else {
+        // JS执行出错
+    }
+ }
+```
 
 ### 4. 接口调用错误
 
 分为 fetch 和 xhr 两个网络请求方式
 
-对 Fetch 使用猴子补丁（monkey patching）重写了 window.fetch 实现中途拦截请求和响应信息
+对 Fetch 使用猴子补丁（monkey patching）重写了 window.fetch 实现中途拦截请求和响应信息.
+
+对于 xhr 也是同理，保存其原来方法，然后修改其原型，在原型方法中进行拦截。
+原型涉及到 open 和 send 方法
 
 ## 三、报错日志数据结构
 
@@ -119,15 +147,15 @@ const {
 
 上报数据如下：
 ```js
-kind: 'experience', //用户体验指标
-type: 'timing', //统计每个阶段的时间
-connectTime: connectEnd - connectStart, //连接时间
-ttfbTime: responseStart - requestStart, //首字节到达时间
-responseTime: responseEnd - responseStart, //响应的读取时间
-parseDOMTime: loadEventStart - responseEnd, //DOM解析的时间
+kind: 'experience', // 用户体验指标
+type: 'timing', // 统计每个阶段的时间
+connectTime: connectEnd - connectStart, // 连接时间
+ttfbTime: responseStart - requestStart, // 首字节到达时间
+responseTime: responseEnd - responseStart, // 响应的读取时间
+parseDOMTime: loadEventStart - responseEnd, // DOM解析的时间
 domContentLoadedTime: domContentLoadedEventEnd - domContentLoadedEventStart,
-timeToInteractive: domInteractive - fetchStart, //首次可交互时间
-loadTIme: loadEventStart - fetchStart //完整的加载时间
+timeToInteractive: domInteractive - fetchStart, // 首次可交互时间
+loadTIme: loadEventStart - fetchStart // 完整的加载时间
 ```
 
 ### 2、 部分性能指标监测
@@ -161,3 +189,28 @@ new PerformanceObserver((entryList,observer)=>{
 
 - 浏览器将第一个DOM渲染到屏幕的时间，相当于白屏时间 **FCP**
 `performance.getEntriesByName('first-contentful-paint')[0];`
+
+- 用户首次交互的反应延迟和处理时间 **FID**
+
+```js
+        new PerformanceObserver((entryList, observer) => {
+            let lastEvent = getLastEvent();
+            let firstInput = entryList.getEntries()[0];
+            if (firstInput) {
+                // processingStart开始处理的时间 startTime开点击的时间 差值就是处理的延迟
+                let inputDelay = firstInput.processingStart - firstInput.startTime;
+                let duration = firstInput.duration; // 处理的耗时
+                if (inputDelay > 0 || duration > 0) {
+                    tracker.send({
+                        kind: 'experience', // 用户体验指标
+                        type: 'firstInputDelay', // 首次输入延迟
+                        inputDelay, // 延时的时间
+                        duration, // 处理的时间
+                        startTime: firstInput.startTime,
+                        selector: lastEvent ? getSelector(lastEvent || lastEvent.target) : ''
+                    });
+                }
+            }
+            observer.disconnect();
+        }).observe({ type: 'first-input', buffered: true });
+```
