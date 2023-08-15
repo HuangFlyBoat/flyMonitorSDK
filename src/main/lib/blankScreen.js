@@ -1,9 +1,12 @@
 // 监控屏幕上出现异常白屏，没有正常渲染内容
 import onload from "../utils/onLoad";
 
-export function blankScreen (tracker) {
+export function blankScreen (tracker, ignoreElement) {
     // 白名单，外层这些元素的渲染不算内容渲染。支持类名和ID
     let wrapperElements = ['html', 'body', '#container', '.content'];
+    if (ignoreElement) {
+        wrapperElements = wrapperElements.concat(ignoreElement);
+    }
     // 存储扫描到的空白点位，当大于一定数目时则认为是白屏
     let emptyPoints = 0;
 

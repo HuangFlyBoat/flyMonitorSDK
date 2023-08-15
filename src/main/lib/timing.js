@@ -2,7 +2,7 @@ import onload from "../utils/onLoad";
 import getLastEvent from "../utils/getLastEvent";
 import getSelector from "../utils/getSelector";
 
-export function timing(tracker) {
+export function timing (tracker) {
     // 首次有意义的元素绘制的时间 和
     // 页面上最大的元素绘制的时间
     let FMP, LCP;
@@ -10,13 +10,13 @@ export function timing(tracker) {
     // 自定义性能观测
     if (PerformanceObserver) {
         // 1. 观测页面中有意义的元素
-        new PerformanceObserver((entryList,observer)=>{
+        new PerformanceObserver((entryList, observer) => {
             let perfEntries = entryList.getEntries();
             FMP = perfEntries[0];
             observer.disconnect();
-        }).observe({ entryTypes:['element'] });
+        }).observe({ entryTypes: ['element'] });
         // 2. 观测页面中最有意义的元素
-        new PerformanceObserver((entryList,observer)=>{
+        new PerformanceObserver((entryList, observer) => {
             let perfEntries = entryList.getEntries();
             LCP = perfEntries[0];
             observer.disconnect();
@@ -81,12 +81,12 @@ export function timing(tracker) {
                 timeToInteractive: domInteractive - fetchStart,//首次可交互时间
                 loadTIme: loadEventStart - fetchStart //完整的加载时间
             });
-
+        }, 3000);
+        setTimeout(() => {
             // 包括了用户自定义的背景绘制，它是首次将像素绘制到屏幕的时刻
             let FP = performance.getEntriesByName('first-paint')[0];
             // 是浏览器将第一个DOM渲染到屏幕的时间，相当于白屏时间
             let FCP = performance.getEntriesByName('first-contentful-paint')[0];
-
             //开始发送性能指标
             tracker.send({
                 kind: 'experience',//用户体验指标
@@ -96,6 +96,6 @@ export function timing(tracker) {
                 firstMeaningfulPaint: FMP?.startTime,
                 largestContentfulPaint: LCP?.startTime
             });
-        }, 3000);
+        }, 3500);
     })
 }
