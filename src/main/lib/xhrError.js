@@ -1,8 +1,7 @@
-import tracker from '../utils/tracker';
 /**
  * 针对调用接口 xhr 的错误捕获
  */
-export function injectXhrError() {
+export function injectXhrError(tracker) {
     // 思路：对于XMLHttpRequest的open和send方法进行了重写，传入日志
     const XMLHttpRequest = window.XMLHttpRequest;
     const oldOpen = XMLHttpRequest.prototype.open;

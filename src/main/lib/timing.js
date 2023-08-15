@@ -1,9 +1,8 @@
-import tracker from '../utils/tracker';
 import onload from "../utils/onLoad";
 import getLastEvent from "../utils/getLastEvent";
 import getSelector from "../utils/getSelector";
 
-export function timing() {
+export function timing(tracker) {
     // 首次有意义的元素绘制的时间 和
     // 页面上最大的元素绘制的时间
     let FMP, LCP;

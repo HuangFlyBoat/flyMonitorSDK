@@ -1,5 +1,4 @@
-import tracker from '../utils/tracker';
-export function injectFetchError() {
+export function injectFetchError(tracker) {
    const oldFetch = fetch;
 
    window.fetch = async (...args) => {

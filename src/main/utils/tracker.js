@@ -1,6 +1,3 @@
-let host = 'cn-chengdu.log.aliyuncs.com';
-let project = 'huang-monitor';
-let logstoreName = 'huang-monitor-store';
 let userAgent = require('user-agent');
 
 function getExtraInfo () {
@@ -13,15 +10,16 @@ function getExtraInfo () {
 }
 
 class SendTracker {
-    constructor() {
+    constructor(project, host, logstoreName, source) {
         this.url = `https://${project}.${host}/logstores/${logstoreName}/track`;
         this.xhr = new XMLHttpRequest;
+        this.source = source || '';
     }
     // https://help.aliyun.com/zh/sls/developer-reference/putwebtracking#reference-354467 阿里云日志请求格式
     send (data = {}) {
         let extraInfo = getExtraInfo();
         let log = {
-            __source__: '',
+            __source__: this.source,
             __logs__: [{ ...extraInfo, ...data }]
         };
         // 对象的值不能为数字
@@ -45,4 +43,4 @@ class SendTracker {
     }
 }
 
-export default new SendTracker();
+export { SendTracker };
