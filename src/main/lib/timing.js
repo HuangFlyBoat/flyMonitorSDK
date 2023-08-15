@@ -1,5 +1,7 @@
 import tracker from '../utils/tracker';
 import onload from "../utils/onLoad";
+import getLastEvent from "../utils/getLastEvent";
+import getSelector from "../utils/getSelector";
 
 export function timing() {
     // 首次有意义的元素绘制的时间 和
@@ -24,7 +26,6 @@ export function timing() {
         new PerformanceObserver((entryList, observer) => {
             let lastEvent = getLastEvent();
             let firstInput = entryList.getEntries()[0];
-            console.log('FID', firstInput);
             if (firstInput) {
                 //processingStart开始处理的时间 startTime开点击的时间 差值就是处理的延迟
                 let inputDelay = firstInput.processingStart - firstInput.startTime;
@@ -36,7 +37,7 @@ export function timing() {
                         inputDelay,//延时的时间
                         duration,//处理的时间
                         startTime: firstInput.startTime,
-                        selector: lastEvent ? getSelector(lastEvent.path || lastEvent.target) : ''
+                        selector: lastEvent ? getSelector(lastEvent || lastEvent.target) : ''
                     });
                 }
 
@@ -93,8 +94,8 @@ export function timing() {
                 type: 'paint',//统计每个阶段的时间
                 firstPaint: FP.startTime,
                 firstContentfulPaint: FCP.startTime,
-                firstMeaningfulPaint: FMP.startTime,
-                largestContentfulPaint: LCP.startTime
+                firstMeaningfulPaint: FMP?.startTime,
+                largestContentfulPaint: LCP?.startTime
             });
         }, 3000);
     })

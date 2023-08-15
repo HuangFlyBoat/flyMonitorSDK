@@ -39,6 +39,7 @@
             onclick="resourceErrorClick()" />
         </div>
         <div class="box-card">
+          <p>xhr</p>
           <input
             type="button"
             value="调用接口(成功)"
@@ -49,13 +50,27 @@
             onclick="interfaceErrorClick(false)" />
         </div>
         <div class="box-card">
-          <p>124124</p>
-          <p>124124</p>
-          <p>124124</p>
+          <p>fetch</p>
+          <input
+            type="button"
+            value="调用接口(成功)"
+            onclick="fetchErrorClick(true)" />
+          <input
+            type="button"
+            value="调用接口(失败)"
+            onclick="fetchErrorClick(false)" />
         </div>
       </div>
     </div>
     <script>
+      setTimeout(() => {
+        // FMP 指标测试
+        let content = document.getElementsByClassName('content')[0];
+        let h1 = document.createElement('h1');
+        h1.innerHTML = '我是这个页面中最有意义的元素';
+        h1.setAttribute('elementtiming','meaningful');
+        content.appendChild(h1);
+      }, 2000);
       function errorClick() {
         window.someVar.error = 'error';
       }
@@ -85,6 +100,33 @@
           xhr.send(JSON.stringify(data));
         }
       }
-    </script>
+      function fetchErrorClick(isSuccess = false) {
+        let url = isSuccess ? '/api/users' : '/api/error';
+        if (isSuccess) {
+          fetch(url,{
+            method: 'GET',
+            headers: new Headers({
+              'Content-Type': 'application/json; charset=UTF-8',
+            }),
+          }).then((res)=>{
+            console.log('res',res);
+          })
+        } else {
+          let data = {
+            name: 'Alice',
+            age: 25,
+          };
+          fetch(url,{
+            method: 'POST',
+            headers: new Headers({
+              'Content-Type': 'application/json; charset=UTF-8',
+            }),
+            body: JSON.stringify(data)
+          }).then((_,rej)=>{
+            console.log('rej',rej);
+          });
+        }
+      }
+   </script>
   </body>
 </html>
