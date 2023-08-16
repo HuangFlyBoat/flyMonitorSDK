@@ -19,7 +19,8 @@ import { SendTracker } from "./utils/tracker";
  * @param {string} logstoreName 
  * @param {ConfigObject} config 
  */
-export function monitorInit (project, host, logstoreName, config) {
+function monitorInit (project, host, logstoreName, config) {
+
     const tracker = new SendTracker(project, host, logstoreName, config?.source)
     injectJsError(tracker);
     injectXhrError(tracker);
@@ -27,3 +28,13 @@ export function monitorInit (project, host, logstoreName, config) {
     blankScreen(tracker, config?.ignoreElement);
     timing(tracker);
 }
+
+/**
+ * 初始化配置
+ * @param {*} options 
+ */
+function init(options) {
+    loadConfig(options);
+}
+
+export { monitorInit }
