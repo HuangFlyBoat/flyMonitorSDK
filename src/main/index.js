@@ -3,6 +3,7 @@ import { injectXhrError } from "./lib/xhrError";
 import { injectFetchError } from "./lib/fetchError";
 import { blankScreen } from "./lib/blankScreen";
 import { timing } from "./lib/timing";
+import { historyPageInject } from "./lib/hisotryInject";
 import { SendTracker } from "./utils/tracker";
 
 
@@ -29,6 +30,11 @@ function init(options) {
     injectFetchError(tracker);
     blankScreen(tracker, options?.ignoreElement);
     timing(tracker);
+    if (options.hashPage) {
+        
+    } else {
+        historyPageInject(tracker);
+    }
 }
 
 /**
