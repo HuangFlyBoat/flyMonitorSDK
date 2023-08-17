@@ -10,8 +10,15 @@ function getExtraInfo () {
 }
 
 class SendTracker {
-    constructor(project, host, logstoreName, source) {
-        this.url = `https://${project}.${host}/logstores/${logstoreName}/track`;
+    /**
+     * 
+     * @param {string} project 主机名 
+     * @param {string} host 域名
+     * @param {string} logstoreName 存储名
+     * @param {string} source 源
+     */
+    constructor(reportUrl, source) {
+        this.url = reportUrl;
         this.xhr = new XMLHttpRequest;
         this.source = source || '';
     }

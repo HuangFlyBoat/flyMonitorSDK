@@ -1,6 +1,6 @@
-import { monitorInit } from './main';
-let host = 'cn-chengdu.log.aliyuncs.com';
-let project = 'huang-monitor';
-let logstoreName = 'huang-monitor-store';
+import { init, trackSend } from './main';
 
-monitorInit(project, host, logstoreName, { source: 'web' });
+init({
+    reportUrl: `https://huang-monitor.cn-chengdu.log.aliyuncs.com/logstores/huang-monitor-store/track`,
+    source: 'PC',
+})

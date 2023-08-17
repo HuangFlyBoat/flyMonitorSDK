@@ -6,35 +6,37 @@ import { timing } from "./lib/timing";
 import { SendTracker } from "./utils/tracker";
 
 
-/**
- * @typedef {Object} ConfigObject
- * @property {string} source - 源信息
- * @property {Array<string>} ignoreElement - 新增白屏扫描时忽略的元素，默认有 ['html', 'body', '#container', '.content']
- */
+const tracker = new SendTracker();
 
 /**
- * 按照阿里云日志服务里的自定义填写 https://${project}.${host}/logstores/${logstoreName}/track
- * @param {string} project 
- * @param {string} host 
- * @param {string} logstoreName 
- * @param {ConfigObject} config 
+ * 初始化配置
+ * @param {object} options 配置项
+ * @param {string} options.reportUrl 后端地址
+ * @param {string} options.source 源信息
+ * @param {string} options.appId 系统id
+ * @param {string} options.userId 用户的id
+ * @param {boolean} options.autoTracker 是否开启默认埋点,默认为true
+ * @param {boolean} options.delay 延迟合并上报的功能，多个请求将会整合为一个
+ * @param {boolean} options.hashPage 是否为哈希路由，默认为history
+ * @param {boolean} options.errorReport 是否开启错误监控
+ * @param {Array<string>} options.ignoreElement 白屏异常扫描时忽略的元素，即使这些元素渲染出来了依旧认为是空白。默认有 ['html', 'body', '#container', '.content']
  */
-function monitorInit (project, host, logstoreName, config) {
-
-    const tracker = new SendTracker(project, host, logstoreName, config?.source)
+function init(options) {
+    tracker.url = options.reportUrl;
+    tracker.source = options.source;
     injectJsError(tracker);
     injectXhrError(tracker);
     injectFetchError(tracker);
-    blankScreen(tracker, config?.ignoreElement);
+    blankScreen(tracker, options?.ignoreElement);
     timing(tracker);
 }
 
 /**
- * 初始化配置
- * @param {*} options 
+ * 自定义埋点
+ * @param {object} data 
  */
-function init(options) {
-    loadConfig(options);
+function trackSend(data) {
+    tracker.send(data);
 }
 
-export { monitorInit }
+export { init, trackSend }
