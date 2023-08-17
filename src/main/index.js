@@ -32,7 +32,7 @@ function init(options) {
 }
 
 /**
- * 自定义埋点
+ * 自定义埋点数据
  * @param {object} data 
  */
 function trackSend(data) {

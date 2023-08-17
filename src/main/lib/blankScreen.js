@@ -17,9 +17,11 @@ export function blankScreen (tracker, ignoreElement) {
     function getSelectorName (element) {
         if (element.id) {
             return '#' + element.id;
-        } else if (element.className) {
+        }
+        if (element.className) {
             return '.' + element.className;
-        } else return element.nodeName.toLowerCase();
+        }
+        return element.nodeName.toLowerCase();
     }
 
     /**

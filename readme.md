@@ -214,3 +214,12 @@ new PerformanceObserver((entryList,observer)=>{
             observer.disconnect();
         }).observe({ type: 'first-input', buffered: true });
 ```
+
+## 用户行为统计
+
+### 1、PV 统计
+
+针对SPA页面
+分为 history 路由和 哈希 路由
+
+### 2、
