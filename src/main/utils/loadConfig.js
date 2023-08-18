@@ -1,18 +1,32 @@
-
+import { injectJsError } from "../lib/jsError";
+import { injectXhrError } from "../lib/xhrError";
+import { injectFetchError } from "../lib/fetchError";
+import { blankScreen } from "../lib/blankScreen";
+import { timing } from "../lib/timing";
+import { historyPageInject } from "../lib/hisotryInject";
 /**
  * 加载配置和代码注入
  * @param {*} options 
  */
-export function loadConfig(options) {
+export function loadConfig(options ,tracker) {
     const {
-        appId, // 系统id
-        userId, // 用户的id
-        reportUrl, // 后端的url
-        autoTracker, // 是否开启无恒埋点
-        delay, // 延迟合并上报的功能
-        hashPage, // 是否为哈希路由
-        errorReport // 是否开启错误监控
+        appId,
+        userId,
+        reportUrl,
+        source,
+        reportHeaderConfig,
+        autoTracker,
+        delay,
+        hashPage,
+        errorReport,
+        blankReport,
+        ignoreElement,
+        performanceReport,
     } = options;
+
+    tracker.url = reportUrl;
+    tracker.source = source;
+    tracker.reportConfig = reportHeaderConfig;
 
     if (appId) {
         window['_monitor_app_id'] = appId;
@@ -20,10 +34,6 @@ export function loadConfig(options) {
 
     if (userId) {
         window['_monitor_user_id'] = userId;
-    }
-
-    if (reportUrl) {
-        window['_monitor_report_id'] = reportUrl;
     }
 
     if (delay) {
@@ -37,10 +47,21 @@ export function loadConfig(options) {
     if (hashPage) {
         // TO DO
     } else {
-        // history API
+        historyPageInject(tracker);
     }
 
     if (errorReport) {
-        // TO DO
+        injectJsError(tracker);
+        injectXhrError(tracker);
+        injectFetchError(tracker);
     }
+
+    if (performanceReport) {
+        timing(tracker);
+    }
+
+    if (blankReport) {
+        blankScreen(tracker, ignoreElement);
+    }
+
 }
