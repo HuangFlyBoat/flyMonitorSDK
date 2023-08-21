@@ -1,5 +1,8 @@
 import onLoad from "../utils/onLoad";
-export function historyPageInject(tracker) {
+
+// 在react里hash路由并不是通过hashchange来监听的，底层还是通过pushState
+// 因此需要同时监听这两个事件完成
+export function hashPageInject(tracker) {
     let beforeTime = Date.now(); // 进入页面的时间
     let beforePage = ''; // 上一个页面
 
@@ -13,14 +16,13 @@ export function historyPageInject(tracker) {
         beforeTime = curTime;
         return stayTime;
     }
-
     function onChangePage(action) {
         const stayTime = getStayTime();
         const currentPage = window.location.href;
         if (action !== 'load'){
             tracker.send({
                 kind: 'experience',
-                type: 'history',
+                type: 'hash',
                 action,
                 stayTime,
                 page: beforePage,
@@ -34,9 +36,9 @@ export function historyPageInject(tracker) {
         onChangePage('load');
     })
 
-    // 通过 popstate事件 直接监听到 history.go() history.back() history.forward() 
-    window.addEventListener('popstate', function () {
-        onChangePage('popstate');
+    // 通过 hashchange 事件监听到原生的 hash 路由切换
+    window.addEventListener('hashchange', function () {
+        onChangePage('hashchange');
     })
 
     // 重写 history 的 pushState 和 replaceState 方法, 使得其能够派发对应事件
@@ -62,12 +64,7 @@ export function historyPageInject(tracker) {
         }
     }
     window.history.pushState = createHistoryEvent('pushState');
-    window.history.replaceState = createHistoryEvent('replaceState');
 
-    // 通过重写history方法和自定义事件来监听 pushState 和 replaceState 行为
-    window.addEventListener('replaceState', function () {
-        onChangePage('replaceState');
-    })
     window.addEventListener('pushState', function () {
         onChangePage('pushState');
     })

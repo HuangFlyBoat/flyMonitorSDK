@@ -6,7 +6,8 @@ init({
     reportHeaderConfig: {
         'x-log-apiversion': '0.6.0',
         'Content-Type': 'application/json'
-    }
+    },
+    hashPage: true
 })
 
 document.getElementById('custom').addEventListener('click', function () {

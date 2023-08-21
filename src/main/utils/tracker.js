@@ -51,14 +51,14 @@ class SendTracker {
      */
     send (data = {}) {
         if (this.reportConfig) {
-            _privateSendByXhr(data);
+            this._privateSendByXhr(data);
         } else {
-            _privateSendByDefault(data);
+            this._privateSendByDefault(data);
         }
     }
 
     _privateSendByDefault (data = {}) {
-        let log = _privateCreateLog(data);
+        let log = this._privateCreateLog(data);
         let body = JSON.stringify(log);
         if (navigator.sendBeacon) {
             navigator.sendBeacon(this.url, body);
@@ -70,7 +70,7 @@ class SendTracker {
     }
 
     _privateSendByXhr (data = {}) {
-        let log = _privateCreateLog(data);
+        let log = this._privateCreateLog(data);
         const xhr = new XMLHttpRequest;
         xhr.open('POST', this.url, true);
         let body = JSON.stringify(log);

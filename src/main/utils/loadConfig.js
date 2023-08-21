@@ -4,6 +4,7 @@ import { injectFetchError } from "../lib/fetchError";
 import { blankScreen } from "../lib/blankScreen";
 import { timing } from "../lib/timing";
 import { historyPageInject } from "../lib/hisotryInject";
+import { hashPageInject } from "../lib/hashInject";
 /**
  * 加载配置和代码注入
  * @param {*} options 
@@ -45,7 +46,7 @@ export function loadConfig(options ,tracker) {
     }
 
     if (hashPage) {
-        // TO DO
+        hashPageInject(tracker);
     } else {
         historyPageInject(tracker);
     }
