@@ -35,6 +35,10 @@ export function loadConfig(options ,tracker) {
 
     if (userId) {
         window['_monitor_user_id'] = userId;
+        tracker.send({
+            kind: 'experience',
+            type: 'uv',
+        })
     }
 
     if (delay) {

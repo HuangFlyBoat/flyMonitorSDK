@@ -23,7 +23,7 @@ const default_options = {
  * 可以自定义配置为 xhr 的请求头信息，键值都为字符串。
  * @param {string} options.source 源信息
  * @param {string} options.appId 系统id
- * @param {string} options.userId 用户的id
+ * @param {string} options.userId 用户的id,配置后可用于统计uv
  * @param {boolean} options.autoTracker 是否开启默认埋点,默认为true
  * @param {boolean} options.delay 延迟合并上报的功能，多个请求将会整合为一个
  * @param {boolean} options.hashPage 是否为哈希路由，默认为history
