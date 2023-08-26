@@ -2,7 +2,7 @@ import onLoad from "../utils/onLoad";
 
 // 在react里hash路由并不是通过hashchange来监听的，底层还是通过pushState
 // 因此需要同时监听这两个事件完成
-export function hashPageInject(tracker) {
+export function hashPageInject (tracker) {
     let beforeTime = Date.now(); // 进入页面的时间
     let beforePage = ''; // 上一个页面
 
@@ -10,16 +10,16 @@ export function hashPageInject(tracker) {
      * 获取停留时间
      * @returns number
      */
-    function getStayTime() {
+    function getStayTime () {
         let curTime = Date.now();
         let stayTime = curTime - beforeTime;
         beforeTime = curTime;
         return stayTime;
     }
-    function onChangePage(action) {
+    function onChangePage (action) {
         const stayTime = getStayTime();
         const currentPage = window.location.href;
-        if (action !== 'load'){
+        if (action !== 'load') {
             tracker.send({
                 kind: 'experience',
                 type: 'hash',
@@ -42,9 +42,9 @@ export function hashPageInject(tracker) {
     })
 
     // 重写 history 的 pushState 和 replaceState 方法, 使得其能够派发对应事件
-    function createHistoryEvent(name) {
+    function createHistoryEvent (name) {
         // 拿到原来的方法
-        const origin = window.history;
+        const origin = window.history[name];
         return function (event) {
             if (name === 'replaceState') {
                 const { current } = event;

@@ -1,5 +1,5 @@
 import onLoad from "../utils/onLoad";
-export function historyPageInject(tracker) {
+export function historyPageInject (tracker) {
     let beforeTime = Date.now(); // 进入页面的时间
     let beforePage = ''; // 上一个页面
 
@@ -7,17 +7,17 @@ export function historyPageInject(tracker) {
      * 获取停留时间
      * @returns number
      */
-    function getStayTime() {
+    function getStayTime () {
         let curTime = Date.now();
         let stayTime = curTime - beforeTime;
         beforeTime = curTime;
         return stayTime;
     }
 
-    function onChangePage(action) {
+    function onChangePage (action) {
         const stayTime = getStayTime();
         const currentPage = window.location.href;
-        if (action !== 'load'){
+        if (action !== 'load') {
             tracker.send({
                 kind: 'experience',
                 type: 'history',
@@ -40,9 +40,9 @@ export function historyPageInject(tracker) {
     })
 
     // 重写 history 的 pushState 和 replaceState 方法, 使得其能够派发对应事件
-    function createHistoryEvent(name) {
+    function createHistoryEvent (name) {
         // 拿到原来的方法
-        const origin = window.history;
+        const origin = window.history[name];
         return function (event) {
             if (name === 'replaceState') {
                 const { current } = event;
