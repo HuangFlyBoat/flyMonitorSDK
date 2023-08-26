@@ -9,15 +9,13 @@ import { hashPageInject } from "../lib/hashInject";
  * 加载配置和代码注入
  * @param {*} options 
  */
-export function loadConfig(options ,tracker) {
+export function loadConfig (options, tracker) {
     const {
         appId,
         userId,
         reportUrl,
         source,
         reportHeaderConfig,
-        autoTracker,
-        delay,
         hashPage,
         errorReport,
         blankReport,
@@ -39,14 +37,6 @@ export function loadConfig(options ,tracker) {
             kind: 'experience',
             type: 'uv',
         })
-    }
-
-    if (delay) {
-        window['_monitor_delay_'] = delay;
-    }
-
-    if (autoTracker) {
-        // TO DO
     }
 
     if (hashPage) {
