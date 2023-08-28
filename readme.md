@@ -6,7 +6,22 @@
 
 ## 一、数据上传
 
-采用阿里云日志服务提供的 WebTracking 来进行网络请求上传日志数据
+示例中采用阿里云日志服务提供的 WebTracking 来进行网络请求上传日志数据，可以自定义配置后端地址和请求头。
+如果不设置请求头则使用的是 `navigator.sendBeacon()` 的方式来上传，如果浏览器不支持则使用新建image元素并赋值src来实现
+
+```js
+    _privateSendByDefault (data = {}) {
+        let log = this._privateCreateLog(data);
+        let body = JSON.stringify(log);
+        if (navigator.sendBeacon) {
+            navigator.sendBeacon(this.url, body);
+        } else {
+            let oImage = new Image();
+            oImage.src = `${this.url}?logs=${body}`;
+        }
+        console.log('log', log);
+    }
+```
 
 https://help.aliyun.com/zh/sls/user-guide/use-the-web-tracking-feature-to-collect-logs?spm=a2c4g.11186623.0.0.79227466nAWvuw
 https://help.aliyun.com/zh/sls/developer-reference/putwebtracking#reference-354467
@@ -174,6 +189,12 @@ loadTIme: loadEventStart - fetchStart // 完整的加载时间
 PerformanceObserver 来自定义观测页面中有意义的元素
 
 - 首次有意义的元素绘制的时间 **FMP**
+
+什么元素是最有意义的 ？ 浏览器也不知道，需要自己设置 elementtiming 属性为 meaningful。
+
+```html
+<h1 elementtiming='meaningful'>我是页面中最有意义的内容</h1>
+```
 
 ```js
 new PerformanceObserver((entryList, observer) => {
