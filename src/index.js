@@ -7,7 +7,8 @@ init({
         'x-log-apiversion': '0.6.0',
         'Content-Type': 'application/json'
     },
-    hashPage: true
+    hashPage: true,
+    isLazyReport: true,
 })
 
 document.getElementById('custom').addEventListener('click', function () {

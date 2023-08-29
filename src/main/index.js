@@ -11,7 +11,8 @@ const default_options = {
     hashPage: false,
     errorReport: true,
     performanceReport: true,
-    blankReport: true
+    blankReport: true,
+    isLazyReport: false
 }
 
 
@@ -23,7 +24,8 @@ const default_options = {
  * 可以自定义配置为 xhr 的请求头信息，键值都为字符串。
  * @param {string} options.source 源信息
  * @param {string} options.appId 系统id
- * @param {string} options.userId 用户的id,配置后可用于统计uv
+ * @param {boolean} options.isLazyReport 是否请求懒发送，多个请求会合并在一个请求里。默认关闭
+ * @param {string} options.userId 用户的id, 配置后可用于统计uv
  * @param {boolean} options.hashPage 是否为哈希路由，默认为history
  * @param {boolean} options.errorReport 是否开启错误监控, 默认为开启，包括了 js 执行错误、期约未捕获的错误、资源加载错误和接口错误
  * @param {boolean} options.performanceReport 是否开启性能监控，默认为开启，监控首屏打开时间、绘制时间、最有意义的元素、首次交互延迟

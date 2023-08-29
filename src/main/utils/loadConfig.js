@@ -15,6 +15,7 @@ export function loadConfig (options, tracker) {
         userId,
         reportUrl,
         source,
+        isLazyReport,
         reportHeaderConfig,
         hashPage,
         errorReport,
@@ -26,6 +27,7 @@ export function loadConfig (options, tracker) {
     tracker.url = reportUrl;
     tracker.source = source;
     tracker.reportConfig = reportHeaderConfig;
+    tracker.isLazy = isLazyReport
 
     if (appId) {
         window['_monitor_app_id'] = appId;
@@ -58,5 +60,5 @@ export function loadConfig (options, tracker) {
     if (blankReport) {
         blankScreen(tracker, ignoreElement);
     }
-
+    
 }
