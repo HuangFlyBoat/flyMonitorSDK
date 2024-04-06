@@ -3,17 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "build": "webpack",
-    "dev": "webpack-dev-server",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
+  "author": "flyboat",
   "license": "ISC",
   "devDependencies": {
-    "html-webpack-plugin": "^5.5.3",
-    "user-agent": "^1.0.4",
-    "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^4.15.1"
+    "user-agent": "^1.0.4"
   }
 }
