@@ -144,14 +144,12 @@ class SendTracker {
         that.clearCache();
       };
     }
-    console.log('log', body);
   }
 
   _privateSendByXhr(body = {}) {
     const xhr = new XMLHttpRequest();
     let that = this;
     xhr.open('POST', this.url, true);
-    console.log('log', body);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.setRequestHeader('x-log-apiversion', '0.6.0');
     xhr.setRequestHeader('x-log-bodyrawsize', body.length);
@@ -160,7 +158,7 @@ class SendTracker {
     }
     xhr.onerror = function (error) {
       console.log('error', error);
-      this.clearCache();
+      that.clearCache();
     };
     xhr.onload = function () {
       if (xhr.readyState === 4) {

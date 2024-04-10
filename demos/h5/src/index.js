@@ -1,14 +1,14 @@
 import { init, trackSend } from '../../../src/main';
 
 init({
-  reportUrl: `https://huang-monitor.cn-chengdu.log.aliyuncs.com/logstores/huang-monitor-store/track`,
+  reportUrl: `http://localhost:3000/monitor`,
   source: 'PC',
   reportHeaderConfig: {
     'x-log-apiversion': '0.6.0',
     'Content-Type': 'application/json',
   },
   hashPage: true,
-  isLazyReport: true,
+  isLazyReport: false,
 });
 
 document.getElementById('custom').addEventListener('click', function () {
