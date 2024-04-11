@@ -1,4 +1,4 @@
-let userAgent = require('user-agent');
+const userAgent = require('user-agent');
 
 function getExtraInfo() {
   return {
@@ -12,32 +12,14 @@ function getExtraInfo() {
 }
 
 class SendTracker {
+  url = '';
+  source = '';
+  // 懒发送节流的时间
   delay = 4000;
+  // 懒发送缓存数据
   cacheData = [];
   timer = null;
   isLazy = false;
-
-  /**
-   *
-   * @param {string} reportUrl 后端地址
-   * @param {string} source 源
-   * @param {object} reportHeaderConfig 请求配置
-   */
-  constructor(reportUrl, source, reportHeaderConfig) {
-    this.url = reportUrl;
-    this.source = source || '';
-    this.reportHeaderConfig = reportHeaderConfig || {};
-
-    // 说明上一次页面异常关闭, 有来不及发送的请求，
-    // let lastCache = localStorage.getItem('fly-monitor-cache')
-    // if (lastCache) {
-    //     this.cacheData = this.cacheData.concat(lastCache);
-    // }
-    // 页面关闭时发送缓存区里面的请求
-    window.addEventListener('unload', function () {
-      if (this.cacheData.length !== 0) this.lazySend({}, true);
-    });
-  }
 
   // 创建请求日志
   _privateCreateLog(data = {}, isSubElement = false) {
@@ -71,30 +53,22 @@ class SendTracker {
     if (data) {
       this.cacheData.push(data);
     }
-    let log = {
+    const log = {
       __source__: this.source,
       __logs__: this.cacheData,
     };
-    // 特殊情况需要立即执行，比如页面突然关闭。又或者打开页面发现有上一次的缓存数据
-    // if (isNow) {
-    //     let body = localStorage.getItem('fly-monitor-cache');
-    //     log.__logs__ = this.cacheData.concat(body);
-    //         if (this.reportHeaderConfig) {
-    //             this._privateSendByXhr(JSON.stringify(log));
-    //         } else {
-    //             this._privateSendByDefault(JSON.stringify(log));
-    //         }
-    //     return;
-    // }
-    localStorage.setItem('fly-monitor-cache', this.cacheData);
+    // 页面关闭时发送缓存数据
+    if (isNow) {
+      this._privateSendByDefault(log);
+      return;
+    }
     // 节流实现延迟传输并且合并请求
     if (!this.timer) {
       this.timer = setTimeout(() => {
         if (this.reportHeaderConfig) {
-          console.log(log);
-          this._privateSendByXhr(JSON.stringify(log));
+          this._privateSendByXhr(log);
         } else {
-          this._privateSendByDefault(JSON.stringify(log));
+          this._privateSendByDefault(log);
         }
         this.timer = null;
       }, this.delay);
@@ -104,7 +78,6 @@ class SendTracker {
   // 每次发送完清理一下缓存
   clearCache() {
     this.cacheData = [];
-    localStorage.setItem('fly-monitor-cache', []);
   }
 
   // https://help.aliyun.com/zh/sls/developer-reference/putwebtracking#reference-354467 阿里云日志请求格式
@@ -120,22 +93,26 @@ class SendTracker {
       this.lazySend(log);
     } else {
       let log = this._privateCreateLog(data);
-      let body = JSON.stringify(log);
       if (this.reportHeaderConfig) {
-        this._privateSendByXhr(body);
+        this._privateSendByXhr(log);
       } else {
-        this._privateSendByDefault(body);
+        this._privateSendByDefault(log);
       }
     }
   }
 
   _privateSendByDefault(body = {}) {
     if (navigator.sendBeacon) {
-      const res = navigator.sendBeacon(this.url, body);
+      console.log(body);
+      const blob = new Blob([JSON.stringify(body)], {
+        type: 'application/json',
+      });
+      console.log(blob);
+      const res = navigator.sendBeacon(this.url, blob);
+      // 请求成功res为true
       if (res) {
         this.clearCache();
       }
-      // 请求成功res为true
     } else {
       let that = this;
       let oImage = new Image();
@@ -147,12 +124,12 @@ class SendTracker {
   }
 
   _privateSendByXhr(body = {}) {
+    const data = JSON.stringify(body);
     const xhr = new XMLHttpRequest();
     let that = this;
     xhr.open('POST', this.url, true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.setRequestHeader('x-log-apiversion', '0.6.0');
-    xhr.setRequestHeader('x-log-bodyrawsize', body.length);
+    xhr.setRequestHeader('x-log-bodyrawsize', data.length);
     for (const key in this.reportHeaderConfig) {
       xhr.setRequestHeader(key, this.reportHeaderConfig[key]);
     }
@@ -167,7 +144,7 @@ class SendTracker {
         }
       }
     };
-    xhr.send(body);
+    xhr.send(data);
   }
 }
 

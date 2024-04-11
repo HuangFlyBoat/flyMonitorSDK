@@ -1,20 +1,16 @@
-
-import { SendTracker } from "./utils/tracker";
-import { loadConfig } from "./utils/loadConfig";
-
+import { SendTracker } from './utils/tracker';
+import { loadConfig } from './utils/loadConfig';
 
 const tracker = new SendTracker();
 
 // 默认配置项
 const default_options = {
-    delay: true,
-    hashPage: false,
-    errorReport: true,
-    performanceReport: true,
-    blankReport: true,
-    isLazyReport: false
-}
-
+  hashPage: false,
+  errorReport: true,
+  performanceReport: true,
+  blankReport: true,
+  isLazyReport: false,
+};
 
 /**
  * 初始化配置
@@ -32,16 +28,20 @@ const default_options = {
  * @param {boolean} options.blankReport 是否开启白屏异常，默认为开启，监控异常白屏
  * @param {Array<string>} options.ignoreElement 白屏异常扫描时忽略的元素，即使这些元素渲染出来了依旧认为是空白。默认有 ['html', 'body', '#container', '.content']
  */
-function init (options) {
-    loadConfig(Object.assign(default_options, options), tracker);
+function init(options) {
+  loadConfig(Object.assign(default_options, options), tracker);
+  // 页面关闭时发送缓存区里面的请求
+  window.addEventListener('beforeunload', function (event) {
+    if (tracker.cacheData.length !== 0) tracker.lazySend(null, true);
+  });
 }
 
 /**
  * 自定义埋点数据
- * @param {object} data 
+ * @param {object} data
  */
-function trackSend (data) {
-    tracker.send(data);
+function trackSend(data) {
+  tracker.send(data);
 }
 
-export { init, trackSend }
+export { init, trackSend };

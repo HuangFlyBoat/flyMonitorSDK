@@ -77,7 +77,7 @@ export function timing(tracker) {
         parseDOMTime: loadEventStart - responseEnd, //DOM解析的时间
         domContentLoadedTime: domContentLoadedEventEnd - domContentLoadedEventStart,
         timeToInteractive: domInteractive - fetchStart, //首次可交互时间
-        loadTIme: loadEventStart - fetchStart, //完整的加载时间
+        loadTime: loadEventStart - fetchStart, //完整的加载时间
       });
     }, 3000);
     setTimeout(() => {
