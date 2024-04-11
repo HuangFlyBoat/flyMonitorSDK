@@ -1,4 +1,4 @@
-const userAgent = require('user-agent');
+import userAgent from 'user-agent';
 
 function getExtraInfo() {
   return {
