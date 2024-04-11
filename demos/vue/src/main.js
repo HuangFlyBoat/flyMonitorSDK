@@ -1,5 +1,5 @@
 import './assets/main.css';
-import { init, trackSend } from '../../../src/main/index';
+import { init } from '../../../src/main/index';
 import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';

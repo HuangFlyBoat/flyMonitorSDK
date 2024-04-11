@@ -5,7 +5,7 @@
       <div class="content">
         <div class="box-card">
           <input type="button" value="点击抛出错误" @click="errorClick" />
-          <input id="custom" type="button" value="自定义上报事件" />
+          <input id="custom" type="button" value="自定义上报事件" @click="customReport" />
         </div>
         <div class="box-card">
           <input type="button" value="点击抛出Promise错误" @click="promiseErrorClick" />
@@ -27,6 +27,8 @@
 </template>
 
 <script setup>
+import { trackSend } from '../../../../src/main/index';
+
 setTimeout(() => {
   // FMP 指标测试
   let content = document.getElementsByClassName('content')[0];
@@ -35,6 +37,13 @@ setTimeout(() => {
   h1.setAttribute('elementtiming', 'meaningful');
   content.appendChild(h1);
 }, 2000);
+
+function customReport() {
+  trackSend({
+    kind: 'custom',
+  });
+}
+
 function errorClick() {
   window.someVar.error = 'error';
 }
