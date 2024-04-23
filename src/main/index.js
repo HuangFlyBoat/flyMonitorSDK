@@ -1,6 +1,11 @@
-import { SendTracker } from './utils/tracker';
-import { loadConfig } from './utils/loadConfig';
+import { SendTracker } from './core/tracker';
+import { loadConfig } from './core/loadConfig';
+import { userBehaviorPlugin } from './plugins/userBehaviorPlugin';
+import { performanceMonitorPlugin } from './plugins/performanceMonitorPlugin';
+import { errorMonitorPlugin } from './plugins/errorMonitorPlugin';
+import { renderingExceptionPlugin } from './plugins/renderingExceptionPlugin';
 
+// 全局创建 Tracker 实例供插件使用
 const tracker = new SendTracker();
 
 // 默认配置项
@@ -29,7 +34,18 @@ const default_options = {
  * @param {Array<string>} options.ignoreElement 白屏异常扫描时忽略的元素，即使这些元素渲染出来了依旧认为是空白。默认有 ['html', 'body', '#container', '.content']
  */
 function init(options) {
-  loadConfig(Object.assign(default_options, options), tracker);
+  const configs = Object.assign(default_options, options);
+
+  // 初始化配置
+  extraInfoInit(configs);
+
+  // 加载配置和插件
+  loadConfig(
+    [errorMonitorPlugin, performanceMonitorPlugin, userBehaviorPlugin, renderingExceptionPlugin],
+    configs,
+    tracker
+  );
+
   // 页面关闭时发送缓存区里面的请求
   window.addEventListener('beforeunload', function (event) {
     if (tracker.cacheData.length !== 0) tracker.lazySend(null, true);
@@ -42,6 +58,22 @@ function init(options) {
  */
 function trackSend(data) {
   tracker.send(data);
+}
+
+// 初始化额外信息
+function extraInfoInit(configs) {
+  const { appId, userId, reportUrl, source, isLazyReport, reportHeaderConfig } = configs;
+
+  tracker.url = reportUrl;
+  tracker.source = source;
+  tracker.reportHeaderConfig = reportHeaderConfig;
+  tracker.isLazy = isLazyReport;
+  if (appId) {
+    window['_monitor_app_id'] = appId;
+  }
+  if (userId) {
+    window['_monitor_user_id'] = userId;
+  }
 }
 
 export { init, trackSend };
