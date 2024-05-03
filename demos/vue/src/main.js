@@ -9,7 +9,7 @@ const app = createApp(App);
 init({
   reportUrl: `http://localhost:3000/monitor`,
   source: 'PC',
-  isLazyReport: true,
+  isLazyReport: false,
 });
 
 app.use(router);

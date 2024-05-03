@@ -10,5 +10,6 @@ init({
 document.getElementById('custom').addEventListener('click', function () {
   trackSend({
     kind: 'custom',
+    type: 'adtag',
   });
 });

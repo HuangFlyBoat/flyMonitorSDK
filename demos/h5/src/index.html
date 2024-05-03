@@ -5,20 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>H5-Demo</title>
     <style>
-      #container {
+      body {
+        height: 100vh;
         background-color: aliceblue;
       }
+
       .content {
         display: flex;
-        justify-content: space-between;
+        justify-content: space-around;
         align-items: center;
         flex-wrap: wrap;
       }
       .box-card {
-        margin: 35px;
-        width: 350px;
-        height: 500px;
-        background-color: bisque;
+        margin: 20px;
+        padding: 10px;
+        width: 300px;
+        background-color: rgb(253, 246, 236);
       }
     </style>
   </head>
@@ -26,20 +28,19 @@
     <div id="container">
       <div class="content">
         <div class="box-card">
+          <p>模拟同步错误</p>
           <input type="button" value="点击抛出错误" onclick="errorClick()" />
+          <p>自定义上报事件</p>
           <input id="custom" type="button" value="自定义上报事件" />
-        </div>
-        <div class="box-card">
+          <p>模拟异步错误</p>
           <input type="button" value="点击抛出Promise错误" onclick="promiseErrorClick()" />
+          <p>模拟资源加载错误</p>
           <input type="button" value="点击抛出资源加载错误" onclick="resourceErrorClick()" />
-        </div>
-        <div class="box-card">
-          <p>xhr</p>
+          <p>监控xhr方式请求</p>
           <input type="button" value="调用接口(成功)" onclick="interfaceErrorClick(true)" />
           <input type="button" value="调用接口(失败)" onclick="interfaceErrorClick(false)" />
-        </div>
-        <div class="box-card">
-          <p>fetch</p>
+
+          <p>监控fetch方式请求</p>
           <input type="button" value="调用接口(成功)" onclick="fetchErrorClick(true)" />
           <input type="button" value="调用接口(失败)" onclick="fetchErrorClick(false)" />
         </div>
